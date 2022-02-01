@@ -39,15 +39,15 @@ class Product:
             data.update({"_id": str(data["_id"])})
             
     @staticmethod
-    def delete_post(id):
-        post = db.products.find_one_and_delete({"_id": ObjectId(id)})
-        return post
+    def delete_product(id):
+        product = db.products.find_one_and_delete({"_id": ObjectId(id)})
+        return product
     
     @staticmethod
-    def update_post(id, data):
+    def update_product(id, data):
         date = datetime.now()
         
-        db.posts.find_one_and_update({"_id": ObjectId(id)}, {"$set": data})
-        db.posts.find_one_and_update({"_id": ObjectId(id)}, {"$set": {"updated_at": date.strftime('%d/%m/%Y %H:%M')}})
-        post = db.posts.find_one({"_id": ObjectId(id)})
-        return post
+        db.products.find_one_and_update({"_id": ObjectId(id)}, {"$set": data})
+        db.products.find_one_and_update({"_id": ObjectId(id)}, {"$set": {"updated_at": date.strftime('%d/%m/%Y %H:%M')}})
+        product = db.products.find_one({"_id": ObjectId(id)})
+        return product
