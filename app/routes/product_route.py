@@ -5,12 +5,8 @@ def product_route(app) -> None:
     @app.get("/products")
     def retrieve():
         return product_controller.retrieve()
-    
-    @app.get("/products/<id>")
-    def retrieve_a_product(id):
-        return product_controller.retrieve_product(id)
             
-    @app.product("/products")
+    @app.post("/products")
     def product():
         return product_controller.create()
     
