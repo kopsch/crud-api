@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 import pymongo
 from datetime import datetime
 from bson import ObjectId
+import gridfs
 
 load_dotenv()
 password = os.environ.get('password')
@@ -11,13 +12,14 @@ DATABASE_URL = f'mongodb+srv://thaeki:{password}@crud-southamerica-east.9ngcb.mo
 
 client = pymongo.MongoClient(DATABASE_URL)
 db = client.db
+fs = gridfs.GridFS(db)
 
 class Product:
     def __init__(self, *args, **kwargs) -> None:
         date = datetime.now()
         self.image = kwargs.get('image')
         self.name = kwargs.get('name')
-        self.price = kwargs.get('price')
+        self.price = float(kwargs.get('price'))
         self.created_at = date.strftime('%d/%m/%Y %H:%M')
         
     @staticmethod

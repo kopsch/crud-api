@@ -1,6 +1,6 @@
 from http import HTTPStatus
 from flask import request, jsonify
-from app.models.product_model import Product
+from app.models.product_model import Product, fs
 
 def retrieve() -> tuple:
     product_list = list(Product.get_all())
@@ -8,16 +8,22 @@ def retrieve() -> tuple:
     return jsonify(product_list), HTTPStatus.OK
 
 def create() -> tuple:
-    data = request.get_json()
-    
-    if not data.keys() >= {"name", "price"}:
-        return {"message": "fields are missing"}, HTTPStatus.BAD_REQUEST
-    
-    product = Product(**data)
-    product.create()
-    Product.serialize(product)
-    
-    return jsonify(product.__dict__), HTTPStatus.CREATED
+    if "image" in request.files:
+        image = request.files["image"]
+        data = {
+            "name": request.form.get("name"),
+            'price': request.form.get("price"),
+            'image': image.filename
+        }
+        
+        fs.put(image, filename = image.filename)
+
+        product = Product(**data)
+        product.create()
+        Product.serialize(product)
+
+        return jsonify(product.__dict__), HTTPStatus.CREATED
+    return {"message": "no image found"}, HTTPStatus.BAD_REQUEST
 
 def delete_product(id) -> tuple:
     product = Product.delete_product(id)
@@ -34,3 +40,8 @@ def update_product(id) -> tuple:
     except:
         return {"message": "the fields are invalid"}, HTTPStatus.BAD_REQUEST
         
+def get_image(name):
+    ...
+    
+file = fs.find_one({'filename': "izana.jpg"})
+print(file)
