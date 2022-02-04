@@ -1,4 +1,6 @@
 from app.controllers import product_controller
+from app.models.product_model import fs
+from PIL import Image
 
 def product_route(app) -> None:
     
@@ -17,3 +19,9 @@ def product_route(app) -> None:
     @app.patch("/products/<id>")
     def update(id):
         return product_controller.update_product(id)
+    
+    @app.get("/files/<filename>")
+    def retrieve_image(filename):
+        im_stream = fs.get_last_version(filename)
+        im = Image.open(im_stream)
+        return product_controller.serve_pil_image(im)
