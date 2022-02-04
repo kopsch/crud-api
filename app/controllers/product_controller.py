@@ -60,7 +60,7 @@ def update_product(id) -> tuple:
     else:
         data = {
             "name": request.form.get("name"),
-            'price': request.form.get("price"),
+            'price': float(request.form.get("price")),
         }
 
         product = Product.update_product(id, data)
