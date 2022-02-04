@@ -1,32 +1,22 @@
-import os
-from dotenv import load_dotenv
-import pymongo
 from datetime import datetime
 from bson import ObjectId
-
-load_dotenv()
-password = os.environ.get('password')
-DATABASE_URL = f'mongodb+srv://thaeki:{password}@crud-southamerica-east.9ngcb.mongodb.net/' \
-    'myFirstDatabase?retryWrites=true&w=majority'
-
-client = pymongo.MongoClient(DATABASE_URL)
-db = client.db
+from app.__init__ import mongo
 
 class Product:
     def __init__(self, *args, **kwargs) -> None:
         date = datetime.now()
         self.image = kwargs.get('image')
         self.name = kwargs.get('name')
-        self.price = kwargs.get('price')
+        self.price = float(kwargs.get('price'))
         self.created_at = date.strftime('%d/%m/%Y %H:%M')
         
     @staticmethod
     def get_all():
-        product_list = db.products.find()
+        product_list = mongo.db.products.find()
         return product_list
         
     def create(self) -> None:
-        db.products.insert_one(self.__dict__)
+        mongo.db.products.insert_one(self.__dict__)
         
     @staticmethod
     def serialize(data) -> None:
@@ -40,14 +30,14 @@ class Product:
             
     @staticmethod
     def delete_product(id):
-        product = db.products.find_one_and_delete({"_id": ObjectId(id)})
+        product = mongo.db.products.find_one_and_delete({"_id": ObjectId(id)})
         return product
     
     @staticmethod
     def update_product(id, data):
         date = datetime.now()
         
-        db.products.find_one_and_update({"_id": ObjectId(id)}, {"$set": data})
-        db.products.find_one_and_update({"_id": ObjectId(id)}, {"$set": {"updated_at": date.strftime('%d/%m/%Y %H:%M')}})
-        product = db.products.find_one({"_id": ObjectId(id)})
+        mongo.db.products.find_one_and_update({"_id": ObjectId(id)}, {"$set": data})
+        mongo.db.products.find_one_and_update({"_id": ObjectId(id)}, {"$set": {"updated_at": date.strftime('%d/%m/%Y %H:%M')}})
+        product = mongo.db.products.find_one({"_id": ObjectId(id)})
         return product
