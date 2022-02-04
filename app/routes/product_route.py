@@ -20,6 +20,7 @@ def product_route(app) -> None:
     def update(id):
         return product_controller.update_product(id)
     
+    
     @app.get("/files/<filename>")
     def retrieve_image(filename):
         im_stream = fs.get_last_version(filename)
